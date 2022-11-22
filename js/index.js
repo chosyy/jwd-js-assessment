@@ -21,9 +21,24 @@
 
 window.addEventListener('DOMContentLoaded', () => {
   const start = document.querySelector('#start');
+  
+  var timeVar;
+
   start.addEventListener('click', function (e) {
     document.querySelector('#quizBlock').style.display = 'block';
     start.style.display = 'none';
+
+
+    var timeleft = 60;
+      timeVar = setInterval(function countdown(){
+        document.getElementById("time").innerHTML = timeleft + "&nbsp"+"seconds remaining";
+        timeleft -= 1;
+        if(timeleft <= 0){
+        clearInterval(timeVar);
+        document.getElementById("time").innerHTML = "Time is up!"
+        calculateScore();
+        }
+      }, 1000);
   });
   // quizArray QUESTIONS & ANSWERS
   // q = QUESTION, o = OPTIONS, a = CORRECT ANSWER
@@ -43,6 +58,16 @@ window.addEventListener('DOMContentLoaded', () => {
       q: 'What is the capital of Australia',
       o: ['Sydney', 'Canberra', 'Melbourne', 'Perth'],
       a: 1,
+    },
+    {
+      q: 'What is the highest mountain in the  world',
+      o: ['Everest', 'Makalu', 'Kilimanjaro', 'Cho Oyu'],
+      a: 1,
+    },
+    {
+      q: 'What is the smallest city in the world',
+      o: ['Perth', 'Vatican', 'San Marino', 'Monaco'],
+      a: 2,
     },
   ];
 
@@ -75,16 +100,43 @@ window.addEventListener('DOMContentLoaded', () => {
         radioElement = document.querySelector('#' + r);
 
         if (quizItem.a == i) {
-          //change background color of li element here
+          liElement.style.backgroundColor = 'blue';
+          liElement.style.color = 'black';
+          
         }
 
-        if (radioElement.checked) {
-          // code for task 1 goes here
+        if(radioElement.checked){
+          if(quizItem.a == i){
+          liElement.style.backgroundColor = 'blue';
+          liElement.style.color = 'black';
+          liElement.style.fontWeight = 'bold';
+
+          score++;
+          }else{
+            liElement.style.color = 'black';
+            liElement.style.fontWeight = 'bold';
+
+          }
         }
+        radioElement.disabled = true;
+
       }
-    });
+    }
+    );
+
+    const calculatedScore = document.querySelector('#calculatedScore');
+    calculatedScore.innerHTML = `You have ${score} out of five questions accurate`;
+    scroll(0,0);
   };
 
   // call the displayQuiz function
   displayQuiz();
+
+  const submit = document.querySelector("#btnSubmit");
+    submit.addEventListener("click", function (e) {
+      calculateScore();
+      clearInterval(timeVar);
+      document.getElementById("time").innerHTML = "Your results:"
+  
+    })
 });
